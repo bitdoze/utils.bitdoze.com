@@ -42,8 +42,8 @@
             </h3>
             <div class="bg-gray-100 p-3 rounded-md mb-4">
               <code class="text-sm font-mono text-gray-800">
-                curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh |
-                bash
+                curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
+                bash postfix-setup.sh
               </code>
             </div>
             <button
@@ -75,7 +75,8 @@
     <script>
       document.querySelector("button").addEventListener("click", function () {
         navigator.clipboard.writeText(
-          "curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh | bash"
+          "curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
+           bash postfix-setup.sh"
         );
         this.textContent = "Copied!";
         setTimeout(() => (this.textContent = "Copy Command"), 2000);
