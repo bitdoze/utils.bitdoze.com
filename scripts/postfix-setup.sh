@@ -43,7 +43,7 @@ while [ -z "$domain" ]; do
     read -p "Domain cannot be empty. Please enter it: " domain
 done
 
-read -p "Enter the default sender email address (optional, press Enter to skip): " sender_email
+read -p "Enter the sender email address (optional, press Enter to skip): " sender_email
 
 read -p "Enter your Postfix hostname (e.g. yourdomain.com): " postfix_hostname
 while [ -z "$postfix_hostname" ]; do
@@ -92,23 +92,39 @@ sudo chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 check_command "Failed to secure sasl_passwd files"
 
-# Step 5: Configure default sender address if provided
+# Step 5: Configure or reset sender address settings
+log "Step 5: Configuring sender address settings..."
 if [ ! -z "$sender_email" ]; then
-    log "Step 5: Configuring default sender address for outgoing emails..."
+    log "Configuring sender address for outgoing emails..."
     backup_file "/etc/postfix/sender_canonical"
+    backup_file "/etc/postfix/smtp_header_checks"
 
-    sudo postconf -e "sender_canonical_classes = envelope_sender"
+    sudo postconf -e "sender_canonical_classes = envelope_sender, header_sender"
     sudo postconf -e "sender_canonical_maps = regexp:/etc/postfix/sender_canonical"
+    sudo postconf -e "smtp_header_checks = regexp:/etc/postfix/smtp_header_checks"
 
     sudo bash -c "cat > /etc/postfix/sender_canonical << EOF
-/^$/ $sender_email
+/.+/ $sender_email
 EOF"
     check_command "Failed to create sender_canonical file"
-    
+
+    sudo bash -c "cat > /etc/postfix/smtp_header_checks << EOF
+/From:.*/ REPLACE From: $sender_email
+EOF"
+    check_command "Failed to create smtp_header_checks file"
+
+    # Create hash databases for the new files
     sudo postmap /etc/postfix/sender_canonical
-    check_command "Failed to create sender_canonical database"
+    sudo postmap /etc/postfix/smtp_header_checks
 else
-    log "Step 5: Skipping default sender address configuration."
+    log "Resetting sender address configuration..."
+    sudo postconf -# sender_canonical_classes
+    sudo postconf -# sender_canonical_maps
+    sudo postconf -# smtp_header_checks
+    
+    # Remove files if they exist
+    sudo rm -f /etc/postfix/sender_canonical /etc/postfix/sender_canonical.db
+    sudo rm -f /etc/postfix/smtp_header_checks /etc/postfix/smtp_header_checks.db
 fi
 
 # Step 6: Ensure the sending domain is correct in /etc/mailname
