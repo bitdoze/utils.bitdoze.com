@@ -9,10 +9,6 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
-    <script
-      src="https://kit.fontawesome.com/your-fontawesome-kit.js"
-      crossorigin="anonymous"
-    ></script>
   </head>
   <body
     class="bg-gradient-to-br from-gray-100 to-gray-200 font-['Inter'] text-gray-800 min-h-screen"
@@ -20,9 +16,29 @@
     <div class="container mx-auto px-4 py-12 max-w-4xl">
       <header class="text-center mb-12">
         <h1 class="text-5xl font-bold text-blue-600 mb-4">Bitdoze Utils</h1>
-        <p class="text-xl text-gray-600">
+        <p class="text-xl text-gray-600 mb-4">
           Supercharge your system with our helpful scripts
         </p>
+        <a
+          href="https://github.com/bitdoze/utils.bitdoze.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-8 w-8 text-gray-700 hover:text-blue-600 transition-colors duration-300"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
       </header>
 
       <div class="grid md:grid-cols-2 gap-8">
@@ -40,17 +56,28 @@
             <h3 class="text-lg font-semibold text-gray-800 mb-2">
               How to Run:
             </h3>
-            <div class="bg-gray-100 p-3 rounded-md mb-4">
-              <code class="text-sm font-mono text-gray-800">
-                curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
-                bash postfix-setup.sh
-              </code>
+            <div class="bg-gray-100 p-3 rounded-md mb-4 overflow-x-auto">
+              <pre
+                class="text-sm font-mono text-gray-800 whitespace-pre-wrap"
+              ><code>curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
+bash postfix-setup.sh</code></pre>
             </div>
-            <button
-              class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
-            >
-              Copy Command
-            </button>
+            <div class="flex space-x-4">
+              <button
+                id="copyBtn"
+                class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
+              >
+                Copy Command
+              </button>
+              <a
+                href="https://www.bitdoze.com/postfix-external-smtp/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors duration-300"
+              >
+                More Info
+              </a>
+            </div>
           </div>
         </div>
 
@@ -73,11 +100,10 @@
     </div>
 
     <script>
-      document.querySelector("button").addEventListener("click", function () {
-        navigator.clipboard.writeText(
-          "curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
-           bash postfix-setup.sh"
-        );
+      document.getElementById("copyBtn").addEventListener("click", function () {
+        const command = `curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh -o postfix-setup.sh
+bash postfix-setup.sh`;
+        navigator.clipboard.writeText(command);
         this.textContent = "Copied!";
         setTimeout(() => (this.textContent = "Copy Command"), 2000);
       });
