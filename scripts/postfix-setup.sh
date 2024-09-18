@@ -58,9 +58,9 @@ done
 
 # Step 2: Update and Install Postfix if needed
 log "Step 2: Updating system and installing Postfix..."
-sudo apt-get update
+sudo DEBIAN_FRONTEND=noninteractive apt-get update
 check_command "Failed to update system"
-sudo apt-get install -y mailutils
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y mailutils
 check_command "Failed to install mailutils"
 
 # Step 3: Configure Postfix
