@@ -15,7 +15,7 @@ for image_id in $(docker image ls -q); do
   image_info=$(docker inspect "$image_id")
 
   # Get the image name (repository and tag)
-  repo_tag=$(docker inspect --format '{{index .RepoTags 0}}' "$image_id")
+  repo_tag=$(docker inspect --format '{{if .RepoTags}}{{index .RepoTags 0}}{{else}}<none>{{end}}' "$image_id")
 
   # Check all subfolders in the overlay2 directory
   while IFS= read -r -d '' subfolder; do
