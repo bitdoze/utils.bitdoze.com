@@ -5,41 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bitdoze Utils - Helpful Scripts</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/your-fontawesome-kit.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
-  <body class="bg-gray-100 font-sans">
-    <div class="container mx-auto px-4 py-8 max-w-3xl">
-      <h1 class="text-4xl font-bold text-gray-800 mb-4">
-        Bitdoze Utils - Helpful Scripts
-      </h1>
-      <p class="text-lg text-gray-600 mb-8">
-        Welcome to Bitdoze Utils! Here you'll find a collection of useful
-        scripts to help you with various tasks. More scripts will be added in
-        the future.
-      </p>
+  <body
+    class="bg-gradient-to-br from-gray-100 to-gray-200 font-['Inter'] text-gray-800 min-h-screen"
+  >
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+      <header class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-blue-600 mb-4">Bitdoze Utils</h1>
+        <p class="text-xl text-gray-600">
+          Supercharge your system with our helpful scripts
+        </p>
+      </header>
 
-      <div class="bg-white shadow-md rounded-lg p-6 mb-6">
-        <h2 class="text-2xl font-semibold text-blue-600 mb-4">
-          Postfix Setup Script
-        </h2>
-        <p class="text-gray-700 mb-4">
-          This script helps you set up Postfix SMTP for reliable email sending.
-        </p>
-        <h3 class="text-xl font-semibold text-gray-800 mb-2">How to Run:</h3>
-        <p class="text-gray-700 mb-2">
-          Execute the following command in your terminal:
-        </p>
-        <div class="bg-gray-100 p-3 rounded-md">
-          <code class="text-sm font-mono text-gray-800"
-            >curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh |
-            bash</code
-          >
+      <div class="grid md:grid-cols-2 gap-8">
+        <div
+          class="bg-white shadow-lg rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105"
+        >
+          <div class="bg-blue-600 text-white p-4">
+            <h2 class="text-2xl font-semibold">Postfix Setup Script</h2>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-700 mb-4">
+              Easily set up Postfix SMTP for reliable email sending with our
+              automated script.
+            </p>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">
+              How to Run:
+            </h3>
+            <div class="bg-gray-100 p-3 rounded-md mb-4">
+              <code class="text-sm font-mono text-gray-800">
+                curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh |
+                bash
+              </code>
+            </div>
+            <button
+              class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-300"
+            >
+              Copy Command
+            </button>
+          </div>
         </div>
-        <p class="text-gray-700 mt-4">
-          This will download and run the script directly from our website.
-        </p>
+
+        <!-- Placeholder for future scripts -->
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden opacity-50">
+          <div class="bg-gray-400 text-white p-4">
+            <h2 class="text-2xl font-semibold">Coming Soon</h2>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-700 mb-4">
+              More helpful scripts are on the way. Stay tuned!
+            </p>
+          </div>
+        </div>
       </div>
 
-      <!-- You can add more script boxes here in the future -->
+      <footer class="mt-12 text-center text-gray-600">
+        <p>&copy; 2024 Bitdoze Utils. All rights reserved.</p>
+      </footer>
     </div>
+
+    <script>
+      document.querySelector("button").addEventListener("click", function () {
+        navigator.clipboard.writeText(
+          "curl -sSL https://utils.bitdoze.com/scripts/postfix-setup.sh | bash"
+        );
+        this.textContent = "Copied!";
+        setTimeout(() => (this.textContent = "Copy Command"), 2000);
+      });
+    </script>
   </body>
 </html>
