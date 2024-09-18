@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # Function to log messages
 log() {
@@ -43,10 +43,7 @@ while [ -z "$domain" ]; do
     read -p "Domain cannot be empty. Please enter it: " domain
 done
 
-read -p "Enter the sender email address (e.g. noreply@$domain): " sender_email
-while [ -z "$sender_email" ]; do
-    read -p "Sender email cannot be empty. Please enter it: " sender_email
-done
+read -p "Enter the sender email address (optional, press Enter to skip): " sender_email
 
 read -p "Enter your Postfix hostname (e.g. yourdomain.com): " postfix_hostname
 while [ -z "$postfix_hostname" ]; do
@@ -76,9 +73,6 @@ sudo postconf -e "smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd"
 sudo postconf -e "smtp_sasl_security_options = noanonymous"
 sudo postconf -e "smtp_tls_security_level = may"
 sudo postconf -e "header_size_limit = 4096000"
-sudo postconf -e "sender_canonical_classes = envelope_sender, header_sender"
-sudo postconf -e "sender_canonical_maps = regexp:/etc/postfix/sender_canonical"
-sudo postconf -e "smtp_header_checks = regexp:/etc/postfix/smtp_header_checks"
 check_command "Failed to configure Postfix"
 
 # Step 4: Create sasl_passwd file with SMTP credentials
@@ -98,20 +92,28 @@ sudo chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 check_command "Failed to secure sasl_passwd files"
 
-# Step 5: Configure sender address in sender_canonical and smtp_header_checks
-log "Step 5: Configuring sender address for outgoing emails..."
-backup_file "/etc/postfix/sender_canonical"
-backup_file "/etc/postfix/smtp_header_checks"
+# Step 5: Configure sender address if provided
+if [ ! -z "$sender_email" ]; then
+    log "Step 5: Configuring sender address for outgoing emails..."
+    backup_file "/etc/postfix/sender_canonical"
+    backup_file "/etc/postfix/smtp_header_checks"
 
-sudo bash -c "cat > /etc/postfix/sender_canonical << EOF
+    sudo postconf -e "sender_canonical_classes = envelope_sender, header_sender"
+    sudo postconf -e "sender_canonical_maps = regexp:/etc/postfix/sender_canonical"
+    sudo postconf -e "smtp_header_checks = regexp:/etc/postfix/smtp_header_checks"
+
+    sudo bash -c "cat > /etc/postfix/sender_canonical << EOF
 /.+/ $sender_email
 EOF"
-check_command "Failed to create sender_canonical file"
+    check_command "Failed to create sender_canonical file"
 
-sudo bash -c "cat > /etc/postfix/smtp_header_checks << EOF
+    sudo bash -c "cat > /etc/postfix/smtp_header_checks << EOF
 /From:.*/ REPLACE From: $sender_email
 EOF"
-check_command "Failed to create smtp_header_checks file"
+    check_command "Failed to create smtp_header_checks file"
+else
+    log "Step 5: Skipping sender address configuration."
+fi
 
 # Step 6: Ensure the sending domain is correct in /etc/mailname
 log "Step 6: Configuring /etc/mailname..."
@@ -125,14 +127,4 @@ log "Step 7: Restarting Postfix..."
 sudo postfix reload
 check_command "Failed to restart Postfix"
 
-# Step 8: Send a test email
-read -p "Enter a test email address to send a test message: " test_email
-while [ -z "$test_email" ]; do
-    read -p "Test email address cannot be empty. Please enter it: " test_email
-done
-
-log "Sending test email..."
-echo "test message" | mail -s "test subject" "$test_email"
-check_command "Failed to send test email"
-
-log "All done! Check /var/log/mail.log for details on email sending."
+log "All done! Postfix has been configured with your SMTP settings."
